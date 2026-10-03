@@ -14,7 +14,7 @@ def get_parser():
         description="GitLab Watcher Command Line Interface"
     )
     parser.add_argument("--config", help="Config file")
-    parser.add_argument("--url", required=True, help="Url of the Gitlab instance")
+    parser.add_argument("--url", default='https://git.drupalcode.org', help="Url of the Gitlab instance. Defaults to G.D.O.")
     parser.add_argument(
         "--access-token", required=True, help="Access token to interact with Gitlab"
     )
