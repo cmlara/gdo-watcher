@@ -19,15 +19,16 @@ def pretty_print_gitlab_list(elements: list[GitlabElement], name):
     table.add_column("Title", style="magenta")
     table.add_column("Labels", justify="center", style="green")
     table.add_column("Updated at", justify="left", style="green")
-    table.add_column("URL", justify="left", style="blue")
+    table.add_column("Reference", justify="left", style="blue")
 
     for element in elements:
+        link = '[link=' + element.url + ']' + element.reference_id + '[/link]'
         table.add_row(
             element.project,
             element.title,
             element.labels,
             element.updated_at,
-            element.url,
+            link,
             style="dim" if element.title.startswith("Draft:") else "bold",
         )
 

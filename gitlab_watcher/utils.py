@@ -48,3 +48,8 @@ class GitlabElement:
         except AttributeError:
             self.url = element.target_url
             self.labels = ""
+
+        try:
+            self.reference_id = element.references.get('full')
+        except AttributeError:
+            self.reference_id = str(element.id)
