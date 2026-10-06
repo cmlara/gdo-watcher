@@ -1,12 +1,14 @@
 """Command line interface for Gitlab Watcher"""
 
+import os
+from rich.console import Console
 import sys
 import argparse
+import yaml
 
 import gitlab
 from gitlab_watcher import issues, todos, merge_requests, security
 from gitlab_watcher.display import pretty_print_gitlab_list
-
 
 def get_parser():
     """Generate the parser for the command line"""
@@ -16,7 +18,7 @@ def get_parser():
     parser.add_argument("--config", help="Config file")
     parser.add_argument("--url", default='https://git.drupalcode.org', help="Url of the Gitlab instance. Defaults to G.D.O.")
     parser.add_argument(
-        "--access-token", required=True, help="Access token to interact with Gitlab"
+        "--access-token", help="Access token to interact with Gitlab"
     )
     return parser
 
@@ -25,6 +27,18 @@ def main():
     """Main command line function"""
     parser = get_parser()
     args = parser.parse_args(sys.argv[1:])
+
+    if args.config is not None:
+        with open(args.config, 'r') as f:
+            parser.set_defaults(**yaml.safe_load(f))
+            args = parser.parse_args(sys.argv[1:])
+
+
+    access_token = os.environ.get('GDO_ACCESS_TOKEN', args.access_token)
+
+    if access_token is None:
+        Console().print('An access token must be provided')
+        exit(1)
 
     gitlab_api = gitlab.Gitlab(args.url, private_token=args.access_token)
     gitlab_api.auth()
