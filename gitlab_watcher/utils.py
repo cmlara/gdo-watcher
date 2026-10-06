@@ -1,7 +1,7 @@
 """Utilities used by other modules"""
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 
 from dateutil.parser import parse
 from humanize import naturaltime
@@ -37,9 +37,9 @@ class GitlabElement:
     def __init__(self, element, gitlab_api):
         self.title = element.title
         self.project = get_project_by_id(element.project_id, gitlab_api).name
-        self.updated_at_datetime = parse(element.updated_at, ignoretz=True)
+        self.updated_at_datetime = parse(element.updated_at)
         self.updated_at = (
-            naturaltime(self.updated_at_datetime, when=datetime.utcnow()) or ""
+            naturaltime(self.updated_at_datetime, when=datetime.now(timezone.utc)) or ""
         )
 
         try:
